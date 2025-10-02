@@ -72,7 +72,8 @@ export const handler = async (event) => {
         // TODO: Substituir este prompt estático com o prompt do seu produto
         const systemPrompt = "Você é um assistente de vendas amigável e eficiente. Responda de forma concisa e útil.";
         
-        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-preview-0514:generateContent?key=${GEMINI_API_KEY}`, {
+        // CORREÇÃO: O nome do modelo foi atualizado para 'gemini-1.5-flash-latest' para resolver o erro 'NOT_FOUND'.
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -131,6 +132,4 @@ export const handler = async (event) => {
     body: 'Método não permitido',
   };
 };
-
-
 
