@@ -1,13 +1,12 @@
-// --- O CÉREBRO DO CONECTOR ---
+// --- O CÉBRO DO CONECTOR ---
 // Este código é uma "Função Serverless" que será executada pela Netlify.
 // A sua única missão é:
 // 1. Receber uma notificação (webhook) do WhatsApp.
 // 2. Enviar a mensagem do utilizador para a IA (Gemini).
 // 3. Pegar na resposta da IA e enviá-la de volta para o utilizador no WhatsApp.
 
-// Importa a biblioteca 'fetch' para fazer chamadas à API.
-// Em ambientes Node.js mais recentes, 'fetch' é global, mas é boa prática ter um polyfill.
-import fetch from 'node-fetch';
+// A função `fetch` está disponível globalmente nos ambientes modernos da Netlify (Node.js 18+),
+// portanto, a importação explícita de 'node-fetch' não é mais necessária e foi removida para corrigir um erro de implantação.
 
 // A função principal que a Netlify irá chamar.
 // O 'event' contém toda a informação da chamada recebida (quem chamou, que dados enviou, etc.)
@@ -129,3 +128,4 @@ export const handler = async (event) => {
     body: 'Método não permitido',
   };
 };
+
