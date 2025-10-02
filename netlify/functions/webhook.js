@@ -83,9 +83,12 @@ export const handler = async (event) => {
         });
         
         const geminiResult = await geminiResponse.json();
+
+        // Adicionado para depuração: Imprime a resposta completa da API Gemini para análise.
+        console.log("Resposta completa da API Gemini:", JSON.stringify(geminiResult, null, 2));
         
         if (!geminiResult.candidates || !geminiResult.candidates[0].content.parts[0].text) {
-            throw new Error('Resposta da IA inválida ou vazia.');
+            throw new Error('Resposta da IA inválida ou vazia. Verifique os logs para a resposta completa da API.');
         }
 
         const aiResponseText = geminiResult.candidates[0].content.parts[0].text.trim();
@@ -128,4 +131,6 @@ export const handler = async (event) => {
     body: 'Método não permitido',
   };
 };
+
+
 
