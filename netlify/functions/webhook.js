@@ -72,9 +72,9 @@ export const handler = async (event) => {
         // TODO: Substituir este prompt estático com o prompt do seu produto
         const systemPrompt = "Você é um assistente de vendas amigável e eficiente. Responda de forma concisa e útil.";
         
-        // CORREÇÃO FINAL: Com base em toda a nossa depuração, voltamos ao modelo 'gemini-pro',
-        // que é o mais estável e compatível com a API v1beta que estamos a usar.
-        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+        // CORREÇÃO FINAL: Mudança para a versão ESTÁVEL (v1) da API da Google em vez de (v1beta).
+        // Usamos o modelo 'gemini-pro' que é o mais compatível.
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -137,6 +137,8 @@ export const handler = async (event) => {
     body: 'Método não permitido',
   };
 };
+
+
 
 
 
