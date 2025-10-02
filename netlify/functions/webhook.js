@@ -72,8 +72,8 @@ export const handler = async (event) => {
         // TODO: Substituir este prompt estático com o prompt do seu produto
         const systemPrompt = "Você é um assistente de vendas amigável e eficiente. Responda de forma concisa e útil.";
         
-        // CORREÇÃO: O nome do modelo foi atualizado para 'gemini-1.5-flash-latest' para resolver o erro 'NOT_FOUND'.
-        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+        // CORREÇÃO FINAL: Mudança para o modelo 'gemini-pro', que é estável e universalmente disponível na API v1beta.
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -89,6 +89,10 @@ export const handler = async (event) => {
         console.log("Resposta completa da API Gemini:", JSON.stringify(geminiResult, null, 2));
         
         if (!geminiResult.candidates || !geminiResult.candidates[0].content.parts[0].text) {
+            // Se a resposta ainda falhar, pode ser devido a filtros de segurança. O log mostrará o motivo.
+            if(geminiResult.candidates && geminiResult.candidates[0].finishReason) {
+                console.error("A IA terminou a geração por um motivo inesperado:", geminiResult.candidates[0].finishReason);
+            }
             throw new Error('Resposta da IA inválida ou vazia. Verifique os logs para a resposta completa da API.');
         }
 
@@ -132,4 +136,6 @@ export const handler = async (event) => {
     body: 'Método não permitido',
   };
 };
+
+
 
