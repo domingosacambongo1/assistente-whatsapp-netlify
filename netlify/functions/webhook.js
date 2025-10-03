@@ -62,8 +62,8 @@ export const handler = async (event) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    // CORREÇÃO: Atualizado para um modelo Llama3 mais recente e suportado.
-                    model: "llama3-70b-8192", 
+                    // CORREÇÃO FINAL: Mudança para o modelo Mixtral, um alvo estável na Groq.
+                    model: "mixtral-8x7b-32768", 
                     messages: [
                         { role: "system", content: systemPrompt },
                         { role: "user", content: userMessage }
@@ -137,6 +137,8 @@ export const handler = async (event) => {
 
   return { statusCode: 405, body: 'Método não permitido' };
 };
+
+
 
 
 
