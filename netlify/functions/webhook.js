@@ -10,7 +10,7 @@ export const handler = async (event) => {
   // Chaves de API para os diferentes fornecedores
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-  const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+  const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY; 
 
   // --- PASSO 1: Verificação do Webhook (Sem alterações) ---
   if (event.httpMethod === 'GET') {
@@ -50,9 +50,9 @@ export const handler = async (event) => {
         let aiResponseText = "Não consegui processar o seu pedido. Tente novamente."; // Resposta padrão
 
         // ### ESCOLHA A SUA IA AQUI ###
-        // Remova os comentários (//) do bloco que pretende usar e comente os outros.
+        // A opção Groq está ativa por defeito.
         
-        // --- OPÇÃO 1: GROQ (RECOMENDADO PELA VELOCIDADE) ---
+        // --- OPÇÃO 1: GROQ ---
         try {
             console.log("A contactar a Groq...");
             const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -62,8 +62,8 @@ export const handler = async (event) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    // CORREÇÃO FINAL: Mudança para o modelo Mixtral, um alvo estável na Groq.
-                    model: "mixtral-8x7b-32768", 
+                    // CORREÇÃO: Usando o modelo moonshot conforme a sua diretiva, via Groq.
+                    model: "moonshotai/kimi-k2-instruct-0905", 
                     messages: [
                         { role: "system", content: systemPrompt },
                         { role: "user", content: userMessage }
@@ -79,32 +79,31 @@ export const handler = async (event) => {
         } catch(e) { console.error("Erro ao chamar a Groq:", e); }
         // --- FIM DA OPÇÃO 1 ---
 
-
         /*
-        // --- OPÇÃO 2: OPENAI ---
+        // --- OPÇÃO 2: MOONSHOT AI (KIMI) ---
         try {
-            console.log("A contactar a OpenAI...");
-            const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+            console.log("A contactar a Moonshot AI...");
+            const moonshotResponse = await fetch('https://api.moonshot.cn/v1/chat/completions', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                    'Authorization': `Bearer ${MOONSHOT_API_KEY}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: "gpt-3.5-turbo",
+                    model: "moonshot-v1-8k", 
                     messages: [
                         { role: "system", content: systemPrompt },
                         { role: "user", content: userMessage }
                     ]
                 })
             });
-            const openaiResult = await openaiResponse.json();
-            if (openaiResult.choices && openaiResult.choices[0].message.content) {
-                aiResponseText = openaiResult.choices[0].message.content.trim();
+            const moonshotResult = await moonshotResponse.json();
+            if (moonshotResult.choices && moonshotResult.choices[0].message.content) {
+                aiResponseText = moonshotResult.choices[0].message.content.trim();
             } else {
-                 console.error("Resposta da OpenAI inválida:", JSON.stringify(openaiResult, null, 2));
+                 console.error("Resposta da Moonshot AI inválida:", JSON.stringify(moonshotResult, null, 2));
             }
-        } catch(e) { console.error("Erro ao chamar a OpenAI:", e); }
+        } catch(e) { console.error("Erro ao chamar a Moonshot AI:", e); }
         // --- FIM DA OPÇÃO 2 ---
         */
 
@@ -137,6 +136,8 @@ export const handler = async (event) => {
 
   return { statusCode: 405, body: 'Método não permitido' };
 };
+
+
 
 
 
