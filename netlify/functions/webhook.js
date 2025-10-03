@@ -62,7 +62,6 @@ export const handler = async (event) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    // CORREÇÃO: Usando o modelo moonshot conforme a sua diretiva, via Groq.
                     model: "moonshotai/kimi-k2-instruct-0905", 
                     messages: [
                         { role: "system", content: systemPrompt },
@@ -79,38 +78,11 @@ export const handler = async (event) => {
         } catch(e) { console.error("Erro ao chamar a Groq:", e); }
         // --- FIM DA OPÇÃO 1 ---
 
-        /*
-        // --- OPÇÃO 2: MOONSHOT AI (KIMI) ---
-        try {
-            console.log("A contactar a Moonshot AI...");
-            const moonshotResponse = await fetch('https://api.moonshot.cn/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${MOONSHOT_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: "moonshot-v1-8k", 
-                    messages: [
-                        { role: "system", content: systemPrompt },
-                        { role: "user", content: userMessage }
-                    ]
-                })
-            });
-            const moonshotResult = await moonshotResponse.json();
-            if (moonshotResult.choices && moonshotResult.choices[0].message.content) {
-                aiResponseText = moonshotResult.choices[0].message.content.trim();
-            } else {
-                 console.error("Resposta da Moonshot AI inválida:", JSON.stringify(moonshotResult, null, 2));
-            }
-        } catch(e) { console.error("Erro ao chamar a Moonshot AI:", e); }
-        // --- FIM DA OPÇÃO 2 ---
-        */
-
         console.log(`Resposta da IA: "${aiResponseText}"`);
         
-        // --- PASSO 4: Enviar a resposta de volta para o WhatsApp (Sem alterações) ---
-        await fetch(`https://graph.facebook.com/v20.0/${waBusinessPhoneId}/messages`, {
+        // --- PASSO 4: Enviar a resposta de volta para o WhatsApp ---
+        // **MELHORIA DE DIAGNÓSTICO:** Agora verificamos a resposta da API da Meta.
+        const metaApiResponse = await fetch(`https://graph.facebook.com/v20.0/${waBusinessPhoneId}/messages`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${WHATSAPP_TOKEN}`,
@@ -123,7 +95,14 @@ export const handler = async (event) => {
             }),
         });
 
-        console.log("Resposta enviada com sucesso!");
+        const metaApiResult = await metaApiResponse.json();
+
+        if (!metaApiResponse.ok) {
+            console.error("A API da Meta reportou um erro:", JSON.stringify(metaApiResult, null, 2));
+        } else {
+            console.log("Resposta enviada com sucesso! Resposta da Meta:", JSON.stringify(metaApiResult, null, 2));
+        }
+        
         return { statusCode: 200, body: 'OK' };
       } else {
         return { statusCode: 200, body: 'Evento ignorado' };
@@ -136,6 +115,8 @@ export const handler = async (event) => {
 
   return { statusCode: 405, body: 'Método não permitido' };
 };
+
+
 
 
 
