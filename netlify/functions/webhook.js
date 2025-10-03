@@ -62,7 +62,8 @@ export const handler = async (event) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: "llama3-8b-8192", // Modelo rápido e capaz
+                    // CORREÇÃO: Atualizado para um modelo Llama3 mais recente e suportado.
+                    model: "llama3-70b-8192", 
                     messages: [
                         { role: "system", content: systemPrompt },
                         { role: "user", content: userMessage }
@@ -136,6 +137,8 @@ export const handler = async (event) => {
 
   return { statusCode: 405, body: 'Método não permitido' };
 };
+
+
 
 
 
